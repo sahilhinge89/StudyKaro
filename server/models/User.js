@@ -1,3 +1,4 @@
+const { TokenExpiredError } = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -44,7 +45,17 @@ const userSchema = new mongoose.Schema({
     courseProgress:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"CourseProgress",
-    }]
+    }],
+
+    // used in reset password token and resetPasswordExpires
+    token :{
+        type:String,
+    },
+    resetPasswordExpires:{
+        type:Date,
+    }
+
+
 })
 
 module.exports = mongoose.model("User",userSchema);
