@@ -26,7 +26,14 @@ exports.createSection = async (req, res) => {
         { new: true },
       );
     }
-    // return response
+    .populate({
+				path: "courseContent",
+				populate: {
+					path: "subSection",
+				},
+			})
+			.exec();
+   // Return the updated course object in the response
     res.status(200).json({
       success: true,
       message: "Section created successfully",
@@ -40,56 +47,44 @@ exports.createSection = async (req, res) => {
   }
 };
 
-exports.updateSection = async (req, res) => {
-  try {
-    // data input
-    const { sectionName, sectionId } = req.body;
-    // data validation
-    if (!sectionName || !sectionId) {
-      res.status(400).json({
-        success: true,
-        message: "Missing Properties",
-      });
-    }
-    //update data
-    const section = await Section.findByIdAndUpdate(
-      sectionId,
-      { sectionName },
-      { new: true },
-    );
 
-    //return response
-    res.status(200).json({
-      success: true,
-      message: "Section created successfully",
-      updatedCourseDetails,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while sending reset password mail",
-      error: error.message,
-    });
-  }
+// UPDATE a section
+exports.updateSection = async (req, res) => {
+	try {
+		const { sectionName, sectionId } = req.body;
+		const section = await Section.findByIdAndUpdate(
+			sectionId,
+			{ sectionName },
+			{ new: true }
+		);
+		res.status(200).json({
+			success: true,
+			message: section,
+		});
+	} catch (error) {
+		console.error("Error updating section:", error);
+		res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
 };
 
-exports.deleteSection = async (req, res) => {
-  try {
-    //get ID using params
-    const { sectionId } = req.params;
 
-    // use findById and delete
-    await Section.findByIdAndDelete(sectionId);
-    return res.status(200).json({
-      success: true,
-      message: "Section deleted Successfully",
-      error: error.message,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Unable to delete Section,please try again",
-      error: error.message,
-    });
-  }
+// DELETE a section
+exports.deleteSection = async (req, res) => {
+	try {
+		const { sectionId } = req.params;
+		await Section.findByIdAndDelete(sectionId);
+		res.status(200).json({
+			success: true,
+			message: "Section deleted",
+		});
+	} catch (error) {
+		console.error("Error deleting section:", error);
+		res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
 };
