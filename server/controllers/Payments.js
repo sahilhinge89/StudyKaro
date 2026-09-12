@@ -30,7 +30,7 @@ exports.capturePayment = async (req,res) =>{
   try {
     course = await Courses.findById(course_id);
     if(!course){
-        return res.status(400).json({
+        return res.json({
             success:false,
             message:'Could not find the course',
         })
@@ -50,7 +50,7 @@ exports.capturePayment = async (req,res) =>{
             message:error.message,
         })
   }
-
+// order create
   const amount = course.price;
   const currency = "INR";
   const options ={
@@ -90,7 +90,7 @@ exports.capturePayment = async (req,res) =>{
 //verifying Singnature of Razorpay and Server
 
 exports.verifySignature =async(req,res) =>{
-
+ const webhookSecret = "12345678"
     const signature = req.header["x-razorpay-signatrue"];
     const shasum = crypto.createHmac("sha256",webhookSecret);
     shasum.update(JSON.stringify(req.body));
