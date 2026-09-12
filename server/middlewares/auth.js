@@ -4,7 +4,7 @@ const User = require("../models/User");
 
 
 // auth middleware 
-exports.auth = async(req,res,next) =>{
+exports.auth = async(req, res, next) =>{
     try{
         //extract token
         const token = req.cookies.token || req.body.token
@@ -16,6 +16,7 @@ exports.auth = async(req,res,next) =>{
                 message:"Token is missing",
             })
         }
+        //verify the token
         try{
             const decode = jwt.verify(token, process.env.JWT_SECERT)
             console.log(decode);
@@ -74,6 +75,7 @@ exports.isInstructor = async(req,res,next) =>{
  }
 }
 
+//isAdmin
 exports.isAdmin = async(req,res,next) =>{
  try {
     if(req.user.accountType !== "Admin"){
