@@ -1,5 +1,5 @@
 const Courses = require("../models/Courses");
-const Tag = require("../models/Tags");
+const Tag = require("../models/Category");
 const User = require("../models/User");
 const { uploaderImaageToCloudinary } = require("../utils/imageUploader");
 
@@ -46,8 +46,8 @@ exports.createCourse = async (req, res) => {
 
     // check for instructor
 
-    const userId = req.user.id;
-   const instructorDetails = await User.findById(userId, {
+    const userid = req.user.id;
+   const instructorDetails = await User.findById(userid, {
 			accountType: "Instructor",
 		});
 
