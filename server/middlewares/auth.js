@@ -40,7 +40,7 @@ exports.auth = async(req, res, next) =>{
 }
 
 //isStudent 
-exports.isSutdent = async(req,res,next) =>{
+exports.isStudent = async(req,res,next) =>{
  try {
     if(req.user.accountType !== "Student"){
         return res.status(401).json({

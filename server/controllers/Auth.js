@@ -4,7 +4,7 @@ const Profile = require('../models/Profile')
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {passwordUpdated} = require('../mail/templates/pass')
+const {passwordUpdated} = require('../mail/templates/passwordUpdate');
 const mailSender = require('../utils/mailSender')
 require("dotenv").config()
 
@@ -235,4 +235,74 @@ exports.login  = async (req,res) =>{
                 message:"Login failure",
    })
  }
-}
+} 
+
+//Change Password 
+exports.changePassword = async (req, res) => {
+  try {
+    // 1. Get data from req.body / req.user (assuming auth middleware sets req.user)
+    const userDetails = await User.findById(req.user.id);
+    const { oldPassword, newPassword, confirmNewPassword } = req.body;
+
+    // 2. Validate input
+    if (!oldPassword || !newPassword || !confirmNewPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password and confirm password do not match",
+      });
+    }
+
+    // 3. Validate old password
+    const isPasswordMatch = await bcrypt.compare(
+      oldPassword,
+      userDetails.password
+    );
+    if (!isPasswordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "The old password is incorrect",
+      });
+    }
+
+    // 4. Hash and update new password
+    const encryptedPassword = await bcrypt.hash(newPassword, 10);
+    const updatedUserDetails = await User.findByIdAndUpdate(
+      req.user.id,
+      { password: encryptedPassword },
+      { new: true }
+    );
+
+    // 5. Send notification email (don't crash the request if the email fails)
+    try {
+      await mailSender(
+        updatedUserDetails.email,
+        "Password Updated Successfully",
+        passwordUpdated(
+          updatedUserDetails.email,
+          `Password updated successfully for ${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
+        )
+      );
+    } catch (mailError) {
+      console.error("Error sending password update email:", mailError);
+    }
+
+    // 6. Return success response
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating the password",
+    });
+  }
+};
