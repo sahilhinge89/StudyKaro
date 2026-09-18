@@ -9,7 +9,7 @@ const {
   createCourse,
   getAllCourses,
   getCourseDetails,
-} = require("../controllers/Course")
+} = require("../controllers/Courses")
 
 
 // Categories Controllers Import
@@ -31,7 +31,7 @@ const {
   createSubSection,
   updateSubSection,
   deleteSubSection,
-} = require("../controllers/Subsection")
+} = require("../controllers/SubSection")
 
 // Rating Controllers Import
 const {
@@ -41,7 +41,7 @@ const {
 } = require("../controllers/RatingAndReview")
 
 // Importing Middlewares
-const { auth, isInstructor, isStudent, isAdmin } = require("../middleware/auth")
+const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth")
 
 // ********************************************************************************************************
 //                                      Course routes
@@ -56,30 +56,30 @@ router.post("/updateSection", auth, isInstructor, updateSection)
 // Delete a Section
 router.post("/deleteSection", auth, isInstructor, deleteSection)
 // Edit Sub Section
-router.post("/updateSubSection", auth, isInstructor, updateSubSection)
+router.post("/updateSubSection", auth, isInstructor, updateSection)
 // Delete Sub Section
-router.post("/deleteSubSection", auth, isInstructor, deleteSubSection)
+router.post("/deleteSubSection", auth, isInstructor, deleteSection)
 // Add a Sub Section to a Section
-router.post("/addSubSection", auth, isInstructor, createSubSection)
+router.post("/addSubSection", auth, isInstructor, createSection)
 // Get all Registered Courses
 router.get("/getAllCourses", getAllCourses)
 // Get Details for a Specific Courses
 router.post("/getCourseDetails", getCourseDetails)
 
-// ********************************************************************************************************
-//                                      Category routes (Only by Admin)
-// ********************************************************************************************************
+
+//Category routes (Only by Admin)
+
 // Category can Only be Created by Admin
 // TODO: Put IsAdmin Middleware here
 router.post("/createCategory", auth, isAdmin, createCategory)
 router.get("/showAllCategories", showAllCategories)
 router.post("/getCategoryPageDetails", categoryPageDetails)
 
-// ********************************************************************************************************
-//                                      Rating and Review
-// ********************************************************************************************************
+
+// Rating and Review
+
 router.post("/createRating", auth, isStudent, createRating)
 router.get("/getAverageRating", getAverageRating)
-router.get("/getReviews", getAllRatingReview)
+router.get("/getReviews", getAllRating )
 
 module.exports = router
