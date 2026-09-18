@@ -9,9 +9,8 @@ const {
   getEnrolledCourses,
 } = require("../controllers/Profile")
 
-// ********************************************************************************************************
-//                                      Profile routes
-// ********************************************************************************************************
+//  Profile routes
+
 // Delet User Account
 router.delete("/deleteProfile", deleteAccount)
 router.put("/updateProfile", auth, updateProfile)
