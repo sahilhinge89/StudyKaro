@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
 const paymentRoutes = require("./routes/Payments");
@@ -17,7 +16,7 @@ dotenv.config();
 const PORT = process.env.PORT || 4000;
 
 //database connect
-database.connect();
+database.connectDB();
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
