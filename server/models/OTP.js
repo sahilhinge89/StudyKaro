@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const mailSender = require("../utils/mailSender");
 const otpSchema = new mongoose.Schema({
    email:{
     type:String,
@@ -30,9 +30,8 @@ async function sendVerificationEmail(email,otp){
 }
 
 // applying pre save middleware
-otpSchema.pre("save",async function (next){
+otpSchema.pre("save", async function () {
    await sendVerificationEmail(this.email, this.otp);
-   next();
 })
 
 module.exports = mongoose.model("OTP",otpSchema);
