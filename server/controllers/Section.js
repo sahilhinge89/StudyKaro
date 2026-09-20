@@ -1,12 +1,10 @@
 const Section = require("../models/Section");
 const Courses = require("../models/Courses");
-
+const SubSection = require("../models/SubSection")
 exports.createSection = async (req, res) => {
   try {
-    // data fetch
     const { sectionName, courseId } = req.body;
 
-    // data validation
     if (!sectionName || !courseId) {
       return res.status(400).json({
         success: false,
@@ -14,10 +12,8 @@ exports.createSection = async (req, res) => {
       });
     }
 
-    // create section
     const newSection = await Section.create({ sectionName });
 
-    // update course with Section ObjectId
     const updatedCourseDetails = await Courses.findByIdAndUpdate(
       courseId,
       {
@@ -35,21 +31,20 @@ exports.createSection = async (req, res) => {
       })
       .exec();
 
-    // Return the updated course object in the response
     return res.status(200).json({
       success: true,
       message: "Section created successfully",
       updatedCourseDetails,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
-      message: "Unable to create Section, Please try again",
+      message: error.message,
     });
   }
 };
 
-// UPDATE a section
 exports.updateSection = async (req, res) => {
 	try {
 		const { sectionName, sectionId } = req.body;
@@ -71,8 +66,6 @@ exports.updateSection = async (req, res) => {
 	}
 };
 
-
-// DELETE a section
 exports.deleteSection = async (req, res) => {
 	try {
 		const { sectionId } = req.params;
