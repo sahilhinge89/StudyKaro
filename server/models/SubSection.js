@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const subSection  = new mongoose.Schema({
-    tile:{
+const subSectionSchema  = new mongoose.Schema({
+    title:{
         type:String,
     },
     timeDuration:{
@@ -17,4 +17,4 @@ const subSection  = new mongoose.Schema({
         
 })
 
-module.exports = mongoose.model("Subsection",subSection);
+module.exports = mongoose.model("Subsection",subSectionSchema);
