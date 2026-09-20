@@ -8,7 +8,7 @@ exports.auth = async(req, res, next) =>{
     try{
         //extract token
         const token = req.cookies.token || req.body.token
-                     || req.header("Authorisation").replace("Bearer", " ");
+                     || req.header("Authorization").replace("Bearer ", "");
         //if token missing,then return response 
         if(!token){
             return res.status(401).json({
@@ -18,7 +18,7 @@ exports.auth = async(req, res, next) =>{
         }
         //verify the token
         try{
-            const decode = jwt.verify(token, process.env.JWT_SECERT)
+            const decode = jwt.verify(token, process.env.JWT_SECRET) 
             console.log(decode);
             req.user = decode;
 
@@ -78,6 +78,7 @@ exports.isInstructor = async(req,res,next) =>{
 //isAdmin
 exports.isAdmin = async(req,res,next) =>{
  try {
+    console.log("Printing AccountType ", req.user.accountType);
     if(req.user.accountType !== "Admin"){
         return res.status(401).json({
             success:false,
