@@ -6,8 +6,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {passwordUpdated} = require('../mail/templates/passwordUpdate');
 const mailSender = require('../utils/mailSender')
+const crypto = require("crypto");
 require("dotenv").config()
-
+console.log("JWT SECRET:", process.env.JWT_SECRET);
 //send OTP
 exports.sendOTP = async (req, res) => {
     try {
@@ -75,7 +76,7 @@ exports.signUp = async (req, res) => {
             lastName,
             email,
             password,
-            confrimPassword,
+            confirmPassword,   
             accountType,
             contactNumber,
             otp
@@ -83,7 +84,7 @@ exports.signUp = async (req, res) => {
 
         //  Do validation
         if (!firstName || !lastName || !email
-            || !password || !confrimPassword || !otp) {
+            || !password || !confirmPassword || !otp) {  
             return res.status(403).json({
                 success: false,
                 message: "All fields are required"
@@ -91,7 +92,7 @@ exports.signUp = async (req, res) => {
         }
 
         // match password and confirm password
-        if (password !== confrimPassword) {
+        if (password !== confirmPassword) {   
             return res.status(400).json({
                 success: false,
                 message: "Password and ConfirmPassword value does not match, Please try again"
@@ -190,7 +191,7 @@ exports.login  = async (req,res) =>{
 
         // user check exist or not
         const user = await User.findOne({email})
-        if(user){
+        if(!user){
             return res.status(401).json({
                 success:false,
                 message:"User is not registered, please signup first"
